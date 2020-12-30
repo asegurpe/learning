@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Chat</title>
+		
+		<style>
+		
+			input#message-box {
+				width: 410px;
+			}
+		
+			#container {
+				width: 400px;
+			}
+		
+			#screenChat {
+				border: 1px solid #ccc;
+				border-right-color: #999;
+				border-bottom-color: #999;
+				height: 170px;
+				overflow-y: scroll;
+				padding: 5px;
+				width: 100%;
+			}
+		
+			#screenChat p {
+				padding: 0;
+				margin: 0;
+			}
+		
+		</style>
+		<script>
+		
+			var chat = {};
+			chat.socket = null;
+		
+			var chatScreen;
+		
+			function webSocketExists() {
+				if ('WebSocket' in window) {
+					return true;
+				} else if ('MozWebSocket' in window) {
+					return true;
+				}
+				return false;
+			}
+		
+			function getHost() {
+				var url = null;
+				if (window.location.protocol == 'http:') {
+					url = 'ws://' + window.location.host + '/learning/chat';
+				} else {
+					url = 'wss://' + window.location.host + '/learning/chat';
+				}
+				console.log(url);
+				return url;
+			}
+		
+			function createWebSocket(host) {
+				var socket = null;
+				if ('WebSocket' in window) {
+					socket = new WebSocket(host);
+				} else if ('MozWebSocket' in window) {
+					socket = new MozWebSocket(host);
+				}
+				
+				if (socket.readyState != socket.CLOSED) {
+					return socket;
+				}
+				
+				console.log(socket);
+				return null;
+			}
+		
+			chat.report = function(message) {
+				chatScreen.write(message);
+			}
+		
+			chat.configMessageBox = function() {
+				document.getElementById('message-box').onkeydown = function(event) {
+					if (event.keyCode == 13) {
+						chat.sendMessage();
+					}
+				}
+			}
+		
+			chat.disconnect = function() {
+				document.getElementById('message-box').onkeydown = null;
+				chat.report('Connection closed');
+			}
+		
+			chat.listen = function(message) {
+				chatScreen.write(message.data);
+			}
+		
+			chat.config = function() {
+				if (!webSocketExists()) {
+					chat.report('Error: WebSocket is not available for this browser');
+					return;
+				}
+				
+				var host = getHost();
+				chat.socket = createWebSocket(host);
+				if(chat.socket == null) {
+					chat.report('Error: Cannot connect to ' + host);
+				}
+				
+				chat.socket.onopen = function() {
+					chat.report('New WebSocket connection');
+					chat.configMessageBox();
+				}
+				
+				chat.socket.onclose = function() {
+					chat.disconnect();
+				}
+				
+				chat.socket.onmessage = function(message) {
+					chat.listen(message);
+				}
+			}
+		
+			chat.start = function() {
+				chat.config();
+			}
+			
+			chat.sendMessage = function() {
+				var message = document.getElementById('message-box').value;
+				if (message != '') {
+					chat.socket.send(message);
+					document.getElementById('message-box').value = '';
+				}
+			}
+		
+			window.onload = function() {
+				chatScreen = document.getElementById('chatScreen');
+				
+				chatScreen.write = function(text) {
+					var p = document.createElement('p');
+					p.style.wordWrap = 'break-word';
+					p.innerHTML = text;
+					chatScreen.appendChild(p);
+					while(chatScreen.childNodes.length > 25) {
+						chatScreen.removeChild(chatScreen.firstChild);
+					}
+					chatScreen.scrollTop = chatScreen.scrollHeight;
+				}
+				
+				chat.start();
+			}
+		</script>
+	</head>
+	<body>
+		<div>
+			<p>
+				<input type="text" placeholder="Teclee un mensaje" id="message-box">
+			</p>
+			<div id="container">
+				<div id="chatScreen"></div>				
+			</div>
+		</div>
+	</body>
+</html>
