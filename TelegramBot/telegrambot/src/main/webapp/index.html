@@ -49,9 +49,9 @@
 			function getHost() {
 				var url = null;
 				if (window.location.protocol == 'http:') {
-					url = 'ws://' + window.location.host + '/websocket/chat';
+					url = 'ws://' + window.location.host + '/learning/chat';
 				} else {
-					url = 'wss://' + window.location.host + '/websocket/chat';
+					url = 'wss://' + window.location.host + '/learning/chat';
 				}
 				console.log(url);
 				return url;

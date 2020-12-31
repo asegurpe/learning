@@ -11,8 +11,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-import com.asegurpe.telegrambot.TelegramBot;
-
 @ServerEndpoint(value = "/chat")
 public class ChatClient {
 	
@@ -49,7 +47,6 @@ public class ChatClient {
 	public void message(String message) {
 		String messageWithId = String.format("%s: %s", nickname, message);
 		broadcast(messageWithId);
-		TelegramBot.getInstance();
 	}
 	
 	@OnError

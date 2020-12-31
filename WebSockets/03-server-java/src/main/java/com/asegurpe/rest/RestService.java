@@ -21,7 +21,7 @@ import com.sun.jersey.multipart.FormDataParam;
 
 @Path("/")
 public class RestService {
-	
+		
 	@GET
 	@Path("/service1")
 	@Produces("application/json")
