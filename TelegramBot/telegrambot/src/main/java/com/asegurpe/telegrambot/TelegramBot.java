@@ -8,10 +8,11 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramBot {
 
 	private static TelegramBot instance;
+	private AsegurpeBot bot;
 
 	private TelegramBot() {
 		try {
-			AsegurpeBot bot = AsegurpeBot.getInstance();
+			bot = AsegurpeBot.getInstance();
 
 			TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
 			telegramBotsApi.registerBot(bot);
@@ -29,5 +30,9 @@ public class TelegramBot {
 			instance = new TelegramBot();
 		}
 		return instance;
+	}
+	
+	public AsegurpeBot getBot() {
+		return bot;
 	}
 }

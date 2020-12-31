@@ -105,9 +105,7 @@ public class Operations {
 				webcam.close();
 				sendGif(update, gif.getAbsolutePath());
 				FileUtils.deleteQuietly(gif);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			} catch (Exception e) { }
 		}
 	}
 

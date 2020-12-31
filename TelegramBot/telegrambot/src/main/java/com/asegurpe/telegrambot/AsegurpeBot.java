@@ -13,6 +13,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import com.asegurpe.rest.RestClient;
+
 public class AsegurpeBot extends TelegramLongPollingBot {
 	
 	private static AsegurpeBot INSTANCE = new AsegurpeBot();
@@ -40,6 +42,9 @@ public class AsegurpeBot extends TelegramLongPollingBot {
 			String text = update.getMessage().getText();
 			
 			System.out.println("Message from " + username + "(" + chat.getChatId() + "): " + text);
+			
+			RestClient.getInstance().get();
+			RestClient.getInstance().post();
 			
 			if (StringUtils.isBlank(chat.getEmail())) {
 				if (EmailValidator.getInstance().isValid(text)) {

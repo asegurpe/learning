@@ -36,7 +36,7 @@ public class RestService {
 		return Response.status(200).entity(jsonString).build();
 	}
 	
-	@GET
+	@POST
 	@Path("/service2")
 	@Produces("application/json")
 	public Response service2() {
