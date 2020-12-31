@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import org.json.JSONObject;
 
+import com.asegurpe.websocket.ChatClient;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
@@ -33,6 +34,7 @@ public class RestService {
                 .put("JSON3", new JSONObject().put("key1", "value1"))
                 .toString();
 		
+		ChatClient.broadcast("M'han cridat a Service 1");
 		return Response.status(200).entity(jsonString).build();
 	}
 	
@@ -47,6 +49,7 @@ public class RestService {
                 .put("JSON6x", new JSONObject().put("key1", "value1"))
                 .toString();
 		
+		ChatClient.broadcast("M'han cridat a Service 2");
 		return Response.status(200).entity(jsonString).build();
 	}
 	

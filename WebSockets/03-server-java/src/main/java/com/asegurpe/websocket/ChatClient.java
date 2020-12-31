@@ -54,7 +54,7 @@ public class ChatClient {
 		System.out.println("Chat error: " + t.toString());
 	}
 	
-	private void broadcast(String message) {
+	public static void broadcast(String message) {
 		for (ChatClient connection : connections) {
 			try {
 				synchronized (connection) {
