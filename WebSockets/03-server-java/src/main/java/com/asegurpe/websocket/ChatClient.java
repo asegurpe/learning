@@ -11,6 +11,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import com.asegurpe.telegrambot.TelegramBot;
+
 @ServerEndpoint(value = "/chat")
 public class ChatClient {
 	
@@ -28,25 +30,26 @@ public class ChatClient {
 	}
 	
 	@OnOpen
-	public void connect(Session session) {
+	public void open(Session session) {
 		this.session = session;
 		connections.add(this);
 		String message = String.format("* El %s %s", nickname, "se ha unido al chat.");
-		broadcastMessage(message);
+		broadcast(message);
 	}
 	
 
 	@OnClose
-	public void disconnect() {
+	public void close() {
 		connections.remove(this);
 		String message = String.format("* %s %s", nickname, "se ha ido del chat.");
-		broadcastMessage(message);
+		broadcast(message);
 	}
 	
 	@OnMessage
-	public void listen(String message) {
+	public void message(String message) {
 		String messageWithId = String.format("%s: %s", nickname, message);
-		broadcastMessage(messageWithId);
+		broadcast(messageWithId);
+		TelegramBot.getInstance();
 	}
 	
 	@OnError
@@ -54,7 +57,7 @@ public class ChatClient {
 		System.out.println("Chat error: " + t.toString());
 	}
 	
-	private void broadcastMessage(String message) {
+	private void broadcast(String message) {
 		for (ChatClient connection : connections) {
 			try {
 				synchronized (connection) {
