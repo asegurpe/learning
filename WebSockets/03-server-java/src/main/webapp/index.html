@@ -30,6 +30,7 @@
 			}
 		
 		</style>
+		<script src="base64.js"></script>
 		<script>
 		
 			var chat = {};
@@ -64,6 +65,7 @@
 				} else if ('MozWebSocket' in window) {
 					socket = new MozWebSocket(host);
 				}
+				socket.binaryType = "arraybuffer"; /////////
 				
 				if (socket.readyState != socket.CLOSED) {
 					return socket;
@@ -91,7 +93,7 @@
 			}
 		
 			chat.listen = function(message) {
-				chatScreen.write(message.data);
+				chatScreen.write(message);
 			}
 		
 			chat.config = function() {
@@ -116,8 +118,30 @@
 				}
 				
 				chat.socket.onmessage = function(message) {
-					chat.listen(message);
+					var buffer = new Uint8Array(message.data);
+					var b = bin2string(buffer);
+					if (buffer[0] == 1 && buffer[1] == 1) {
+	 					chat.listen(b.substring(2, b.length)); // TEXT
+					} else {
+						drawImageBinary(message); // IMAGE
+					}
+					window.scrollTo(0,document.body.scrollHeight);
 				}
+			}
+			
+			function drawImageBinary(message) {
+				var buffer = new Uint8Array(message.data);
+				var img = document.createElement("img");
+				img.src = "data:image/bmp;base64," + bytesToBase64(buffer);
+				chatScreen.appendChild(img);
+	        }
+			
+			function bin2string(array){
+				var result = "";
+				for(var i = 0; i < array.length; ++i){
+					result+= (String.fromCharCode(array[i]));
+				}
+				return result;
 			}
 		
 			chat.start = function() {
