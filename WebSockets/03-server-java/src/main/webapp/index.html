@@ -132,7 +132,14 @@
 			function drawImageBinary(message) {
 				var buffer = new Uint8Array(message.data);
 				var img = document.createElement("img");
+				img.setAttribute("id", "image1");
 				img.src = "data:image/bmp;base64," + bytesToBase64(buffer);
+
+				// Streaming
+				var element = chatScreen.childNodes[chatScreen.childNodes.length-1];
+				chatScreen.removeChild(element);
+				//
+				
 				chatScreen.appendChild(img);
 	        }
 			
